@@ -1,0 +1,22 @@
+{
+  "name": "idea-mix",
+  "version": "1.0.0",
+  "description": "能力・摩擦・刺激のカードを認知的隔離と衝突合成で組み合わせ、まだ存在しない概念を生成する汎用アイデア発想プラグイン。",
+  "author": {
+    "name": "no-problem-dev",
+    "email": "info@no-problem-net.com"
+  },
+  "keywords": [
+    "ideation",
+    "creative-thinking",
+    "cognitive-isolation",
+    "collision-synthesis",
+    "diversity-engineering",
+    "brainstorming"
+  ],
+  "skills": "./skills/",
+  "agents": [
+    "./agents/card-abstractor.md",
+    "./agents/deepener.md"
+  ]
+}
