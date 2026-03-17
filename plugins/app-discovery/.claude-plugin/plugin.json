@@ -1,0 +1,23 @@
+{
+  "name": "app-discovery",
+  "version": "1.0.0",
+  "description": "アプリ・サービスアイデアの発見・検証・成形パイプライン。ペインポイント収集→市場検証→機能設計の一貫フローを多様性エンジニアリングで強化。",
+  "author": {
+    "name": "no-problem-dev",
+    "email": "info@no-problem-net.com"
+  },
+  "keywords": [
+    "ideation",
+    "app-ideas",
+    "pain-points",
+    "validation",
+    "shaping",
+    "diversity-engineering",
+    "product-discovery"
+  ],
+  "skills": "./skills/",
+  "agents": [
+    "./agents/pain-miner.md",
+    "./agents/opportunity-spotter.md"
+  ]
+}

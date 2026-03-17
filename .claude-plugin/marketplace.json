@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ideate",
+  "version": "1.0.0",
+  "description": "AI-enhanced ideation platform — diverse, structured idea discovery powered by Claude Code plugins",
+  "owner": {
+    "name": "no-problem-dev",
+    "email": "info@no-problem-net.com"
+  },
+  "plugins": [
+    {
+      "name": "app-discovery",
+      "description": "アプリ・サービスアイデアの発見・検証・成形パイプライン。多様性エンジニアリング適用済み。",
+      "version": "1.0.0",
+      "source": "./plugins/app-discovery",
+      "category": "ideation",
+      "tags": ["ideation", "app-ideas", "pain-points", "validation", "diversity-engineering"]
+    }
+  ]
+}
