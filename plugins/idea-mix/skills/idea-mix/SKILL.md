@@ -3,7 +3,6 @@ title: "Idea Mix"
 created: 2026-03-18
 version: 2.0.0
 context: main
-model: claude-opus-4-6
 tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, WebSearch]
 tags: [skill, idea-mix, ideation, diversity-engineering, deep-reasoning]
 status: active
