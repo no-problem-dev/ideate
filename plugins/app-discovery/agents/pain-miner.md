@@ -2,7 +2,7 @@
 title: Pain Miner Agent
 created: 2026-03-18
 version: 1.0.0
-model: claude-sonnet-4
+model: sonnet
 tags: [agent, pain-mining, app-discovery]
 status: active
 type: agent

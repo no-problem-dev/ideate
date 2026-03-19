@@ -3,7 +3,7 @@ title: "Idea Mix Review"
 created: 2026-03-18
 version: 1.0.0
 context: fork
-model: claude-sonnet-4
+model: sonnet
 tools: [Read, Glob, Grep]
 tags: [skill, idea-mix, review]
 status: active
