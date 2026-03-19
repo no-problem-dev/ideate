@@ -23,7 +23,7 @@ allowed-tools: Bash, Read, Write, Glob
 | 頻度 | 1日複数回OK | 1日1回 |
 | モード | クイック/対話 | 完全自動 |
 | WebSearch | **使わない** | 使う |
-| 保存先 | ideas/pain-log/ | ideas/app-seeds/ |
+| 保存先 | ideas/pain-log/（デフォルト） | ideas/app-seeds/（デフォルト） |
 
 ### 自律レベル
 | 行動 | レベル | 備考 |
@@ -37,10 +37,25 @@ allowed-tools: Bash, Read, Write, Glob
 1日1件以上の観察記録。月30件を目標とし、ゲーミフィケーションで可視化する。
 
 ## Limit
-- **ideas/pain-log/ のみ**にファイルを作成・変更する
+- 出力は本スキルの管轄ディレクトリに限定する（デフォルト: `ideas/pain-log/`）
 - **WebSearch / WebFetch は使用禁止**（一次観察のみに限定するため）
 - 既存エントリの内容を変更しない（append のみ）
 - ユーザーの観察を否定・評価しない（記録に徹する）
+
+### 出力先の決定
+
+本スキルは以下のデフォルトパスに出力する。ホストリポのディレクトリ構造が異なる場合は、
+既存の構造に合わせて適切なディレクトリに配置すること。
+
+| 出力 | デフォルトパス | ファイル命名 |
+|------|-------------|------------|
+| 観察ログ | `ideas/pain-log/` | `YYYY-MM-DD.md` |
+
+**配置ルール:**
+- ホストリポに `ideas/` ディレクトリが存在すればその配下に配置
+- 存在しない場合はリポルートの構造を確認し、類似のディレクトリ（`data/`, `output/`, `docs/` 等）に配置
+- どちらもなければデフォルトパスでディレクトリを作成
+- 過去の出力ファイルが既に別のパスに存在する場合はそのパスに従う
 
 ## Action
 
@@ -61,7 +76,7 @@ allowed-tools: Bash, Read, Write, Glob
 #### 共通: ステータス算出
 
 1. **今月のエントリ数をカウント**
-   - `ideas/pain-log/` から今月（YYYY-MM-*）のファイルを Glob で検索
+   - 出力ディレクトリ（デフォルト: `ideas/pain-log/`）から今月（YYYY-MM-*）のファイルを Glob で検索
    - 各ファイルの `entries` フロントマター値を合計
 
 2. **連続日数を算出**
@@ -83,7 +98,7 @@ allowed-tools: Bash, Read, Write, Glob
    - **カテゴリ絵文字**: 内容に合った絵文字1つ
 
 2. 今日の pain-log ファイルを確認:
-   - `ideas/pain-log/YYYY-MM-DD.md` が存在する → append モード
+   - 出力ディレクトリの `YYYY-MM-DD.md`（デフォルト: `ideas/pain-log/YYYY-MM-DD.md`）が存在する → append モード
    - 存在しない → テンプレート `templates/pain-log.md` から新規作成
 
 3. エントリを追記（フォーマットは下記参照）
@@ -96,8 +111,8 @@ allowed-tools: Bash, Read, Write, Glob
    ```
 
 6. git add + commit:
-   - 新規: `ideas: Pain Log YYYY-MM-DD`
-   - 追記: `ideas: Pain Log YYYY-MM-DD (+{entry_number - 1})`
+   - 新規: `git add {output_dir}/YYYY-MM-DD.md && git commit -m "ideas: Pain Log YYYY-MM-DD"`
+   - 追記: `git add {output_dir}/YYYY-MM-DD.md && git commit -m "ideas: Pain Log YYYY-MM-DD (+{entry_number - 1})"`
 
 #### 対話モード（引数なし）
 
@@ -127,7 +142,7 @@ allowed-tools: Bash, Read, Write, Glob
 
 ## Signal
 ### 完了条件
-- [ ] ideas/pain-log/YYYY-MM-DD.md にエントリが追記されている
+- [ ] 出力ディレクトリの YYYY-MM-DD.md（デフォルト: `ideas/pain-log/YYYY-MM-DD.md`）にエントリが追記されている
 - [ ] フロントマターの entries が正しく更新されている
 - [ ] ゲーミフィケーション表示が出力されている
 - [ ] git commit が完了している

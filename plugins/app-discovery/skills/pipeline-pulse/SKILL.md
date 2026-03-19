@@ -23,7 +23,7 @@ P.A.I.N.フレームワークでパターンを抽出、習慣ヘルスを可視
 | 問い | 今週何が繰り返されたか？ | どんな課題が見えてきたか？次に検証すべきは？ |
 | フレームワーク | 3つの問い | P.A.I.N. + パイプラインファネル |
 | 習慣追跡 | なし | pain-log streak + フェーズ進捗 |
-| 保存先 | knowledge/weekly/ | ideas/pulse/ |
+| 保存先 | knowledge/weekly/ | ideas/pulse/（デフォルト） |
 
 ### 自律レベル
 | 行動 | レベル | 備考 |
@@ -41,10 +41,25 @@ P.A.I.N.フレームワークでパターンを抽出、習慣ヘルスを可視
 Novelty ヘルスにより「既視感アイデア」の増加を検知して多様性を維持する。
 
 ## Limit
-- **ideas/pulse/ のみ**にファイルを作成する
-- ideas/ 以下は読み取りのみ（pain-log, app-seeds, app-validation, app-shaping）
-- 既存の app-seeds や pain-log のファイルを変更しない
+- 出力は本スキルの管轄ディレクトリに限定する（デフォルト: `ideas/pulse/`）
+- 他スキルの出力ディレクトリは読み取りのみ（pain-log, seed-hunt, seed-validate, seed-shape の各出力先）
+- 既存の各スキル出力ファイルを変更しない
 - プロモート（/seed-validate への昇格）はユーザー確認が必須
+
+### 出力先の決定
+
+本スキルは以下のデフォルトパスに出力する。ホストリポのディレクトリ構造が異なる場合は、
+既存の構造に合わせて適切なディレクトリに配置すること。
+
+| 出力 | デフォルトパス | ファイル命名 |
+|------|-------------|------------|
+| パルスレポート | `ideas/pulse/` | `YYYY-Wxx.md` |
+
+**配置ルール:**
+- ホストリポに `ideas/` ディレクトリが存在すればその配下に配置
+- 存在しない場合はリポルートの構造を確認し、類似のディレクトリ（`data/`, `output/`, `docs/` 等）に配置
+- どちらもなければデフォルトパスでディレクトリを作成
+- 過去の出力ファイルが既に別のパスに存在する場合はそのパスに従う
 
 ## Action
 
@@ -60,7 +75,7 @@ Novelty ヘルスにより「既視感アイデア」の増加を検知して多
 過去のパルスデータを読み込んで Novelty トレンドを把握する:
 
 1. **過去 4 週のパルスファイルを読み込む**
-   - `ideas/pulse/` から直近 4 件の `*.md` ファイルを Glob で取得
+   - pipeline-pulse の出力ディレクトリ（デフォルト: `ideas/pulse/`）から直近 4 件の `*.md` ファイルを Glob で取得
    - 各ファイルのフロントマターと Novelty Health セクションを読み込む
    - 各週の「新規性 N≥4 アイデアの割合」を抽出する
 
@@ -75,10 +90,10 @@ Novelty ヘルスにより「既視感アイデア」の増加を検知して多
 
 #### Step 2: データ収集（Read）
 
-- `ideas/pain-log/` — 今週分（月〜日）の全エントリを読み込み
-- `ideas/app-seeds/` — 今週分の全シートを読み込み
-- `ideas/app-validation/` — 直近のバリデーションファイルを確認
-- `ideas/app-shaping/` — 直近のシェイピングファイルを確認
+- pain-log の出力ディレクトリ（デフォルト: `ideas/pain-log/`） — 今週分（月〜日）の全エントリを読み込み
+- seed-hunt の出力ディレクトリ（デフォルト: `ideas/app-seeds/`） — 今週分の全シートを読み込み
+- seed-validate の出力ディレクトリ（デフォルト: `ideas/app-validation/`） — 直近のバリデーションファイルを確認
+- seed-shape の出力ディレクトリ（デフォルト: `ideas/app-shaping/`） — 直近のシェイピングファイルを確認
 
 #### Step 3: クラスター分析
 
@@ -187,19 +202,19 @@ Next milestone: {target} {metric} → Phase {N+1} ({next_phase_name})
 #### Step 11: ファイル作成
 
 - テンプレート: `templates/pulse.md`
-- 保存先: `ideas/pulse/YYYY-Wxx.md`（ISO 週番号）
+- 保存先: 出力ディレクトリの `YYYY-Wxx.md`（デフォルト: `ideas/pulse/YYYY-Wxx.md`、ISO 週番号）
 - 各セクションを分析結果で埋める
 
 #### Step 12: コミット
 
 ```bash
-git add ideas/pulse/YYYY-Wxx.md
+git add {output_dir}/YYYY-Wxx.md
 git commit -m "ideas: Pipeline Pulse YYYY-Wxx"
 ```
 
 ## Signal
 ### 完了条件
-- [ ] ideas/pulse/YYYY-Wxx.md が作成されている
+- [ ] 出力ディレクトリの `YYYY-Wxx.md`（デフォルト: `ideas/pulse/YYYY-Wxx.md`）が作成されている
 - [ ] 過去 4 週のパルスファイルが読み込まれている（または初回である旨が記載）
 - [ ] クラスター分析が実施されている
 - [ ] P.A.I.N. フレームワークが今週の視点（ローテーション）で上位クラスターに適用されている
@@ -217,7 +232,7 @@ git commit -m "ideas: Pipeline Pulse YYYY-Wxx"
 | INFO | 今週の pain-log が 0 件 | 「今週の観察記録がありません」と表示、習慣リマインド |
 | INFO | 前回パルスが見つからない | Novelty トレンド比較をスキップ |
 | INFO | 過去 4 週のデータが揃わない | 取得できた週数分のみで Novelty トレンドを算出 |
-| WARN | ideas/app-seeds/ が空 | seed-hunt セクションをスキップ |
+| WARN | seed-hunt の出力ディレクトリ（デフォルト: `ideas/app-seeds/`）が空 | seed-hunt セクションをスキップ |
 | WARN | Novelty Health < 30% | アラートを Novelty Health セクションに記載 |
 | ALERT | Novelty Health < 30% が 2 週連続 | CRITICAL ALERT を記載、多様性ヒントを提案 |
 | WARN | git commit が失敗 | エラーを表示して手動コミットを案内 |

@@ -50,9 +50,9 @@ ideate プラットフォームの多様性エンジニアリング（DEP-1/2/4/
 
 ### 前提条件
 
-- `ideas/app-seeds/` ディレクトリが存在すること（初回は空でよい）
+- seed-hunt の出力ディレクトリが存在すること（デフォルト: `ideas/app-seeds/`。初回は空でよい）
 - `XAI_API_KEY` 環境変数があれば Grok 検索が有効になる（optional）
-- `ideas/pain-log/` があれば Step 1 で参照する（optional）
+- pain-log の出力ディレクトリがあれば Step 1 で参照する（デフォルト: `ideas/pain-log/`。optional）
 
 ---
 
@@ -61,9 +61,9 @@ ideate プラットフォームの多様性エンジニアリング（DEP-1/2/4/
 | 属性 | 内容 |
 |------|------|
 | **専門性** | ペインポイント探索、アイデア評価、多様性エンジニアリング |
-| **権限** | `ideas/app-seeds/` への書き込み、Web 検索・フェッチ |
+| **権限** | seed-hunt 出力ディレクトリへの書き込み（デフォルト: `ideas/app-seeds/`）、Web 検索・フェッチ |
 | **責任** | 毎回質的に異なるシードを収集・評価し、Featured に価値あるシードを選出する |
-| **禁止事項** | `ideas/app-seeds/` 以外のディレクトリへの書き込み |
+| **禁止事項** | 本スキルの管轄ディレクトリ以外への書き込み |
 
 ---
 
@@ -88,7 +88,7 @@ ideate プラットフォームの多様性エンジニアリング（DEP-1/2/4/
 - [ ] 6 軸スコアリングが全シードに適用されている
 - [ ] Critic 批判が Top 5 シードに対して 3 フレームで実行されている
 - [ ] Most Novel（最高 N スコア）が Featured に強制選出されている
-- [ ] 出力ファイルが `ideas/app-seeds/YYYY-MM-DD.md` に保存されている
+- [ ] 出力ファイルが出力ディレクトリの `YYYY-MM-DD.md`（デフォルト: `ideas/app-seeds/YYYY-MM-DD.md`）に保存されている
 
 ---
 
@@ -99,14 +99,14 @@ ideate プラットフォームの多様性エンジニアリング（DEP-1/2/4/
 `ideate/core/sequences/diversity-context-loader.md` を以下のパラメータで実行する:
 
 ```
-output_dir:      ideas/app-seeds/
+output_dir:      seed-hunt の出力ディレクトリ（デフォルト: ideas/app-seeds/）
 lookback_count:  4
 extract_field:   "## Featured" セクションの ★ マーク付きシード（タイトル・カテゴリ・キーワード）
 ```
 
 **処理**:
 
-1. `ideas/app-seeds/` から直近 4 件のファイルを Glob で取得（日付降順）
+1. seed-hunt の出力ディレクトリ（デフォルト: `ideas/app-seeds/`）から直近 4 件のファイルを Glob で取得（日付降順）
 2. 各ファイルの `## Featured` セクションから ★ シードのタイトル・カテゴリ・キーワードを抽出
 3. `novelty_constraint`（重複回避プロンプト）を生成
 4. `novelty_scoring_guide`（N スコア算出基準）を生成
@@ -216,7 +216,7 @@ analogy_domain_index = 日 % 30
 
 ### Step 1: pain-log シグナル参照（optional）
 
-`ideas/pain-log/` の直近 2 週間分のファイルを Glob で取得し、
+pain-log の出力ディレクトリ（デフォルト: `ideas/pain-log/`）の直近 2 週間分のファイルを Glob で取得し、
 頻出カテゴリ・キーワードを抽出してシード収集時の優先ヒントとする。
 
 ```
@@ -542,7 +542,22 @@ Critic 批判を経た SURVIVED シードから Featured を選出する。
 
 ### Step 8: ファイル出力
 
-`ideas/app-seeds/YYYY-MM-DD.md` に以下のフォーマットで書き出す。
+出力ディレクトリの `YYYY-MM-DD.md`（デフォルト: `ideas/app-seeds/YYYY-MM-DD.md`）に以下のフォーマットで書き出す。
+
+### 出力先の決定
+
+本スキルは以下のデフォルトパスに出力する。ホストリポのディレクトリ構造が異なる場合は、
+既存の構造に合わせて適切なディレクトリに配置すること。
+
+| 出力 | デフォルトパス | ファイル命名 |
+|------|-------------|------------|
+| アイデアシート | `ideas/app-seeds/` | `YYYY-MM-DD.md` |
+
+**配置ルール:**
+- ホストリポに `ideas/` ディレクトリが存在すればその配下に配置
+- 存在しない場合はリポルートの構造を確認し、類似のディレクトリ（`data/`, `output/`, `docs/` 等）に配置
+- どちらもなければデフォルトパスでディレクトリを作成
+- 過去の出力ファイルが既に別のパスに存在する場合はそのパスに従う
 
 ```markdown
 ---
@@ -650,12 +665,12 @@ novelty_excluded: {件数}
 
 | 操作 | 許可 |
 |------|------|
-| `ideas/app-seeds/` への書き込み | ✅ |
-| `ideas/pain-log/` の読み取り | ✅ |
+| seed-hunt 出力ディレクトリへの書き込み（デフォルト: `ideas/app-seeds/`） | ✅ |
+| pain-log 出力ディレクトリの読み取り（デフォルト: `ideas/pain-log/`） | ✅ |
 | Web 検索・フェッチ | ✅ |
 | Reddit curl コマンド実行 | ✅ |
 | Grok API 呼び出し（$XAI_API_KEY） | ✅ |
-| `ideas/app-seeds/` 以外への書き込み | ❌ |
+| 本スキルの管轄ディレクトリ以外への書き込み | ❌ |
 | `seed-validate` の自動起動 | ❌（ユーザー判断） |
 
 ---
@@ -728,7 +743,7 @@ novelty_excluded: {件数}
 
 ### Output（成果物）
 
-- ファイル: `ideas/app-seeds/YYYY-MM-DD.md`
+- ファイル: 出力ディレクトリの `YYYY-MM-DD.md`（デフォルト: `ideas/app-seeds/YYYY-MM-DD.md`）
 - フォーマット: 上記「Step 8: ファイル出力」の Markdown テンプレート
 - フロントマター: `title`, `created`, `tags`, `status`, `week`, `rotation`, `sources`,
   `total_collected`, `after_signal_filter`, `after_score_filter`, `critic_survived`, `novelty_excluded`
@@ -745,7 +760,7 @@ novelty_excluded: {件数}
 
 ### Done Criteria（完了条件）
 
-- [ ] `ideas/app-seeds/YYYY-MM-DD.md` が保存されている
+- [ ] 出力ディレクトリの `YYYY-MM-DD.md`（デフォルト: `ideas/app-seeds/YYYY-MM-DD.md`）が保存されている
 - [ ] Featured が 3 件以上（Most Novel 含む最大 4 件）選出されている
 - [ ] 全ステップ（Step 0 〜 Step 8）が実行されている
 - [ ] Novelty 制約が今回のスコアリングに反映されている（N スコアが単調でない）
@@ -766,6 +781,6 @@ novelty_excluded: {件数}
 - ❌ Total スコアをカットオフなしで全件 Critic にかけない（Top 5 のみ）
 - ❌ Most Novel の強制選出を省略しない
 - ❌ N スコアを推測で書かず、必ず past_items と比較して算出する
-- ❌ `ideas/app-seeds/` 以外のディレクトリにファイルを書き込まない
+- ❌ 本スキルの管轄ディレクトリ以外にファイルを書き込まない
 - ❌ Grok API が失敗しても全体を中断しない（Source B をスキップして続行）
 - ❌ スコアリングを「感覚」で行わず、軸定義に従って 1-5 の根拠を持って評価する
