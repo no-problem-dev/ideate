@@ -4,8 +4,6 @@ name: seed-hunt
 description: "ideate platform — ネットの海からアプリアイデアの種を収集・スコアリングするスキル"
 created: 2026-03-18
 version: 2.0.0
-context: main
-model: sonnet
 tools: [Read, Write, Bash, WebSearch, WebFetch, Glob]
 tags: [skill, app-discovery, ideation, diversity]
 status: active
